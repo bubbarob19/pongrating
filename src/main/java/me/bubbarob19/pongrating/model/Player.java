@@ -6,12 +6,13 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "players")
+@Document(collection = "player")
 public class Player {
 
     @Id
@@ -21,5 +22,5 @@ public class Player {
     private int elo;
     private int displayElo;
     private Rank rank;
-    private List<Match> matchHistory;
+    private List<Match> matchHistory = new ArrayList<>();
 }

@@ -34,14 +34,14 @@ public class MatchService {
     }
 
     private void updatePlayerData(Player winner, Player loser, MatchInputDTO matchData) {
-        int winnerNewRating = eloCalculationService.calculateNewRating(
+        int winnerDelta = eloCalculationService.calculateRatingChange(
                 winner.getElo(),
                 loser.getElo(),
                 matchData.getWinnerScore(),
                 matchData.getLoserScore()
         );
 
-        int loserNewRating = eloCalculationService.calculateNewRating(
+        int loserDelta = eloCalculationService.calculateRatingChange(
                 loser.getElo(),
                 winner.getElo(),
                 matchData.getLoserScore(),
@@ -54,18 +54,18 @@ public class MatchService {
                 matchData.getLoserId(),
                 matchData.getWinnerScore(),
                 matchData.getLoserScore(),
-                winnerNewRating - winner.getElo(),
-                loserNewRating - loser.getElo()
+                winnerDelta,
+                loserDelta
         );
 
         winner.getMatchHistory().add(match);
         loser.getMatchHistory().add(match);
 
-        winner.setElo(winnerNewRating);
-        loser.setElo(loserNewRating);
+        winner.setElo(winner.getElo() + winnerDelta);
+        loser.setElo(loser.getElo() + loserDelta);
 
-        winner.setDisplayElo(eloCalculationService.calculateDisplayElo(winnerNewRating, winner.getMatchHistory().size()));
-        loser.setDisplayElo(eloCalculationService.calculateDisplayElo(loserNewRating, loser.getMatchHistory().size()));
+        winner.setDisplayElo(eloCalculationService.calculateDisplayElo(winner.getElo(), winner.getMatchHistory().size()));
+        loser.setDisplayElo(eloCalculationService.calculateDisplayElo(loser.getElo(), loser.getMatchHistory().size()));
 
         winner.setRank(rankCalculationService.calculateRank(winner.getDisplayElo()));
         loser.setRank(rankCalculationService.calculateRank(loser.getDisplayElo()));

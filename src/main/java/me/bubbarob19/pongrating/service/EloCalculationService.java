@@ -5,15 +5,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class EloCalculationService {
     private static final int K_FACTOR = 32;
-    private static final int WINNING_BONUS = 20;
+    private static final int WINNING_BONUS = 30;
 
-    public int calculateNewRating(int playerRating, int opponentRating, int playerScore, int opponentScore) {
+    public int calculateRatingChange(int playerRating, int opponentRating, int playerScore, int opponentScore) {
         double expectedScorePlayer = calculateExpectedScore(playerRating, opponentRating);
 
         if (playerScore > opponentScore)
             playerScore += WINNING_BONUS;
         else
-            opponentRating += WINNING_BONUS;
+            opponentScore += WINNING_BONUS;
 
         double playerActualScore = (double) playerScore / (playerScore + opponentScore);
 

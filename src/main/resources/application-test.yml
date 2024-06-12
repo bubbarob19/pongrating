@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: pongrating
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      database: "test-db"
