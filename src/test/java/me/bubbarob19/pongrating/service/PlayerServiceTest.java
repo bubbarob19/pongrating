@@ -41,7 +41,7 @@ public class PlayerServiceTest {
 
     @Test
     public void fillBlankPlayerAttributes() {
-        Player player = new Player("id1", "name1", "name1", 0, 0, null, new ArrayList<>());
+        Player player = new Player("id1", "name1", "name1", 0, 0, 0, 0, null, new ArrayList<>());
         playerService.addPlayer(player);
 
         assertThat(player.getElo()).isEqualTo(1400);

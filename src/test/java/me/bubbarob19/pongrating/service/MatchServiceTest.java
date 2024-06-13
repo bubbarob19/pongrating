@@ -47,8 +47,8 @@ public class MatchServiceTest {
 
     @Test
     public void simulatePlayerStartingOut() {
-        Player player1 = new Player("id1", "name1", "name1", 1400, 0, Rank.NEWBIE, new ArrayList<>());
-        Player player2 = new Player("id2", "name2", "name2", 1400, 0, Rank.NEWBIE, new ArrayList<>());
+        Player player1 = new Player("id1", "name1", "name1", 1400, 0, 0, 0, Rank.NEWBIE, new ArrayList<>());
+        Player player2 = new Player("id2", "name2", "name2", 1400, 0, 0, 0, Rank.NEWBIE, new ArrayList<>());
         playerService.addPlayer(player1);
         playerService.addPlayer(player2);
 

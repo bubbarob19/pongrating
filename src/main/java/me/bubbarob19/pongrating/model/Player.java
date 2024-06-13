@@ -21,6 +21,8 @@ public class Player {
     private String lastName;
     private int elo;
     private int displayElo;
+    private int wins;
+    private int losses;
     private Rank rank;
     private List<Match> matchHistory = new ArrayList<>();
 }

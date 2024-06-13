@@ -61,6 +61,9 @@ public class MatchService {
         winner.getMatchHistory().add(match);
         loser.getMatchHistory().add(match);
 
+        winner.setWins(winner.getWins() + 1);
+        loser.setLosses(loser.getLosses() + 1);
+
         winner.setElo(winner.getElo() + winnerDelta);
         loser.setElo(loser.getElo() + loserDelta);
 
