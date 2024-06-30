@@ -5,3 +5,11 @@ spring:
     mongodb:
       uri: ${MONGODB_URI}
       database: ${DATABASE_NAME}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/issuer
+
+jwt:
+  secret: ${JWT_SECRET}

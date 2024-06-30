@@ -1,26 +1,21 @@
 package me.bubbarob19.pongrating.service;
 
+import lombok.AllArgsConstructor;
 import me.bubbarob19.pongrating.exception.EntityNotFoundException;
 import me.bubbarob19.pongrating.model.Match;
 import me.bubbarob19.pongrating.model.Player;
 import me.bubbarob19.pongrating.model.dto.MatchInputDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class MatchService {
     private final PlayerService playerService;
     private final EloCalculationService eloCalculationService;
     private final RankCalculationService rankCalculationService;
-
-    @Autowired
-    public MatchService(PlayerService playerService, EloCalculationService eloCalculationService, RankCalculationService rankCalculationService) {
-        this.playerService = playerService;
-        this.eloCalculationService = eloCalculationService;
-        this.rankCalculationService = rankCalculationService;
-    }
 
     public List<Player> processMatch(MatchInputDTO matchInputDTO) {
         Player winner = playerService.getPlayerById(matchInputDTO.getWinnerId())
@@ -35,31 +30,18 @@ public class MatchService {
 
     private void updatePlayerData(Player winner, Player loser, MatchInputDTO matchData) {
         int winnerDelta = eloCalculationService.calculateRatingChange(
-                winner.getElo(),
-                loser.getElo(),
+                winner,
+                loser,
                 matchData.getWinnerScore(),
                 matchData.getLoserScore()
         );
 
         int loserDelta = eloCalculationService.calculateRatingChange(
-                loser.getElo(),
-                winner.getElo(),
+                loser,
+                winner,
                 matchData.getLoserScore(),
                 matchData.getWinnerScore()
         );
-
-        Match match = new Match(
-                matchData.getDate(),
-                matchData.getWinnerId(),
-                matchData.getLoserId(),
-                matchData.getWinnerScore(),
-                matchData.getLoserScore(),
-                winnerDelta,
-                loserDelta
-        );
-
-        winner.getMatchHistory().add(match);
-        loser.getMatchHistory().add(match);
 
         winner.setWins(winner.getWins() + 1);
         loser.setLosses(loser.getLosses() + 1);
@@ -67,11 +49,28 @@ public class MatchService {
         winner.setElo(winner.getElo() + winnerDelta);
         loser.setElo(loser.getElo() + loserDelta);
 
-        winner.setDisplayElo(eloCalculationService.calculateDisplayElo(winner.getElo(), winner.getMatchHistory().size()));
-        loser.setDisplayElo(eloCalculationService.calculateDisplayElo(loser.getElo(), loser.getMatchHistory().size()));
+        winner.setDisplayElo(eloCalculationService.calculateDisplayElo(winner.getElo(), winner.getMatchHistory().size() + 1));
+        loser.setDisplayElo(eloCalculationService.calculateDisplayElo(loser.getElo(), loser.getMatchHistory().size() + 1));
 
         winner.setRank(rankCalculationService.calculateRank(winner.getDisplayElo()));
         loser.setRank(rankCalculationService.calculateRank(loser.getDisplayElo()));
+
+        Match match = new Match(
+                matchData.getDate() != null ? matchData.getDate() : new Date(),
+                matchData.getWinnerId(),
+                matchData.getLoserId(),
+                winner.getFirstName() + " " + winner.getLastName(),
+                loser.getLastName() + " " + loser.getLastName(),
+                matchData.getWinnerScore(),
+                matchData.getLoserScore(),
+                winnerDelta,
+                loserDelta,
+                winner.getDisplayElo(),
+                loser.getDisplayElo()
+        );
+
+        winner.getMatchHistory().add(match);
+        loser.getMatchHistory().add(match);
 
         playerService.updatePlayer(winner.getId(), winner);
         playerService.updatePlayer(loser.getId(), loser);

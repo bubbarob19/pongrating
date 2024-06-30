@@ -1,7 +1,9 @@
 package me.bubbarob19.pongrating.service;
 
+import lombok.AllArgsConstructor;
 import me.bubbarob19.pongrating.model.Player;
 import me.bubbarob19.pongrating.model.Rank;
+import me.bubbarob19.pongrating.model.User;
 import me.bubbarob19.pongrating.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,13 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class PlayerService {
     private final PlayerRepository playerRepository;
-
-    @Autowired
-    public PlayerService(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
 
     public List<Player> getAllPlayers() {
         return playerRepository.findAll();
@@ -47,9 +45,20 @@ public class PlayerService {
     }
 
     public Player addPlayer(Player player) {
-        player.setElo(1400);
-        player.setRank(Rank.NEWBIE);
-        return playerRepository.save(player);
+        return player;
+    }
+
+    public void createPlayer(User user) {
+        Player player = Player.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .id(user.getPlayerId())
+                .wins(0)
+                .losses(0)
+                .elo(1400)
+                .rank(Rank.NEWBIE)
+                .build();
+        playerRepository.save(player);
     }
 
     public Player updatePlayer(String id, Player player) {

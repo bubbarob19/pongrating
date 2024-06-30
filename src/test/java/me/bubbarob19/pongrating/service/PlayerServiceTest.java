@@ -2,15 +2,9 @@ package me.bubbarob19.pongrating.service;
 
 import me.bubbarob19.pongrating.model.Player;
 import me.bubbarob19.pongrating.model.Rank;
-import me.bubbarob19.pongrating.repository.PlayerRepository;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,7 +15,6 @@ import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)

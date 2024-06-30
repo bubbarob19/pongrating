@@ -1,6 +1,7 @@
 package me.bubbarob19.pongrating.controller;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import me.bubbarob19.pongrating.model.Player;
 import me.bubbarob19.pongrating.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +13,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/players")
+@AllArgsConstructor
 public class PlayerController {
 
     private final PlayerService playerService;
-
-    @Autowired
-    public PlayerController(PlayerService playerService) {
-        this.playerService = playerService;
-    }
 
     @GetMapping
     public List<Player> getAllPlayers() {

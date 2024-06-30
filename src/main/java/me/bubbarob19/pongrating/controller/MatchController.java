@@ -1,6 +1,7 @@
 package me.bubbarob19.pongrating.controller;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import me.bubbarob19.pongrating.model.Player;
 import me.bubbarob19.pongrating.model.dto.MatchInputDTO;
 import me.bubbarob19.pongrating.service.MatchService;
@@ -15,16 +16,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/matches")
+@AllArgsConstructor
 public class MatchController {
 
     private final MatchService matchService;
 
-    @Autowired
-    public MatchController(MatchService matchService) {
-        this.matchService = matchService;
-    }
-
-    @PostMapping("/processMatch")
+    @PostMapping("/process-match")
     public ResponseEntity<List<Player>> processMatch(@Valid @RequestBody MatchInputDTO matchInputDTO) {
         return ResponseEntity.ok(matchService.processMatch(matchInputDTO));
     }
