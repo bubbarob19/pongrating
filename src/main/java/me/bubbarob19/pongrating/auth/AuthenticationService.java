@@ -3,8 +3,10 @@ package me.bubbarob19.pongrating.auth;
 import lombok.RequiredArgsConstructor;
 import me.bubbarob19.pongrating.exception.AlreadyRegisteredException;
 import me.bubbarob19.pongrating.exception.InvalidInviteCodeException;
+import me.bubbarob19.pongrating.exception.LoginFailedException;
 import me.bubbarob19.pongrating.model.Role;
 import me.bubbarob19.pongrating.model.User;
+import me.bubbarob19.pongrating.repository.PlayerRepository;
 import me.bubbarob19.pongrating.repository.UserRepository;
 import me.bubbarob19.pongrating.service.InviteCodeService;
 import me.bubbarob19.pongrating.service.PlayerService;
@@ -21,6 +23,7 @@ import java.util.List;
 public class AuthenticationService {
     private final UserRepository repository;
     private final PlayerService playerService;
+    private final PlayerRepository playerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -57,16 +60,40 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        User user = repository.findByEmail(request.getEmail()).orElseThrow();
-        String jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+            User user = repository.findByEmail(request.getEmail()).orElseThrow();
+            String jwtToken = jwtService.generateToken(user);
+            if (playerRepository.findById(user.getPlayerId()).isEmpty()) {
+                playerService.createPlayer(user);
+            }
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        } catch (Exception e) {
+            throw new LoginFailedException();
+        }
+    }
+
+    public ValidateTokenResponse isTokenValid(ValidateTokenRequest request) {
+        boolean isTokenValid;
+        try {
+            isTokenValid = jwtService.isTokenValid(
+                    request.getToken(),
+                    User.builder()
+                            .email(request.getEmail())
+                            .build()
+            );
+        } catch (Exception e) {
+            isTokenValid = false;
+        }
+        return ValidateTokenResponse.builder()
+                .valid(isTokenValid)
                 .build();
     }
 }

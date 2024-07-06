@@ -26,13 +26,13 @@ public class PlayerController {
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayerById(@PathVariable String id) {
         Optional<Player> player = playerService.getPlayerById(id);
-        return player.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return player.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/byName")
     public ResponseEntity<Player> getPlayerByFirstNameAndLastName(@RequestParam String firstName, @RequestParam String lastName) {
         Optional<Player> player = playerService.getPlayerByFirstNameAndLastName(firstName, lastName);
-        return player.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return player.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PostMapping

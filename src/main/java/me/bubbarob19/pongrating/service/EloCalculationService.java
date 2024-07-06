@@ -48,11 +48,11 @@ public class EloCalculationService {
 
     private int calculateKFactorMultiplier(Player player) {
         int matchesPlayed = player.getMatchHistory().size();
-        if (matchesPlayed < 2)
+        if (matchesPlayed < 5)
             return 5;
-        else if (matchesPlayed < 5)
-            return 3;
         else if (matchesPlayed < 10)
+            return 3;
+        else if (matchesPlayed < 20)
             return 2;
         return 1;
     }
