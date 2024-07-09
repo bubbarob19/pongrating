@@ -21,6 +21,10 @@ public class EloCalculationService {
         int kFactor = BASE_K_FACTOR * calculateKFactorMultiplier(player);
         int playerRating = player.getElo();
         int playerNewRating = (int) Math.round(playerRating + kFactor * (playerActualScore - expectedScorePlayer));
+        if (playerNewRating < 0)
+            playerNewRating = 0;
+        if (playerNewRating > 2500)
+            playerNewRating = 2500;
 
         return playerNewRating - playerRating;
     }
