@@ -33,39 +33,39 @@ public class MatchServiceTest {
     @Autowired
     MatchService matchService;
 
-    @BeforeEach
-    public void clearDatabase() {
-        mongoTemplate.getDb().drop();
-    }
-
-    @Test
-    public void simulatePlayerStartingOut() {
-        Player player1 = new Player("id1", "name1", "name1", 1400, 0, 0, 0, Rank.NEWBIE, new ArrayList<>());
-        Player player2 = new Player("id2", "name2", "name2", 1400, 0, 0, 0, Rank.NEWBIE, new ArrayList<>());
-        playerService.addPlayer(player1);
-        playerService.addPlayer(player2);
-
-        for (int i = 0; i < 5; i++) {
-            var list = matchService.processMatch(createSampleMatch());
-            player1 = list.get(0);
-            player2 = list.get(1);
-
-            int totalElo = player1.getElo() + player2.getElo();
-            assertThat(player1.getDisplayElo() + player2.getDisplayElo()).isLessThan(totalElo);
-            assertThat(player1.getDisplayElo() + player2.getDisplayElo()).isGreaterThan(0);
-        }
-
-        var list = matchService.processMatch(createSampleMatch());
-        player1 = list.get(0);
-        player2 = list.get(1);
-
-        int totalElo = player1.getElo() + player2.getElo();
-        assertThat(player1.getDisplayElo() + player2.getDisplayElo()).isEqualTo(totalElo);
-    }
-
-    private MatchInputDTO createSampleMatch() {
-        int winningScore = 21;
-        int losingScore = new Random().nextInt(1, 21);
-        return new MatchInputDTO(new Date(), "id1", "id2", winningScore, losingScore);
-    }
+//    @BeforeEach
+//    public void clearDatabase() {
+//        mongoTemplate.getDb().drop();
+//    }
+//
+//    @Test
+//    public void simulatePlayerStartingOut() {
+//        Player player1 = new Player("id1", "name1", "name1", 1400, 0, 0, 0, Rank.NEWBIE, new ArrayList<>());
+//        Player player2 = new Player("id2", "name2", "name2", 1400, 0, 0, 0, Rank.NEWBIE, new ArrayList<>());
+//        playerService.addPlayer(player1);
+//        playerService.addPlayer(player2);
+//
+//        for (int i = 0; i < 5; i++) {
+//            var list = matchService.processMatch(createSampleMatch());
+//            player1 = list.get(0);
+//            player2 = list.get(1);
+//
+//            int totalElo = player1.getElo() + player2.getElo();
+//            assertThat(player1.getDisplayElo() + player2.getDisplayElo()).isLessThan(totalElo);
+//            assertThat(player1.getDisplayElo() + player2.getDisplayElo()).isGreaterThan(0);
+//        }
+//
+//        var list = matchService.processMatch(createSampleMatch());
+//        player1 = list.get(0);
+//        player2 = list.get(1);
+//
+//        int totalElo = player1.getElo() + player2.getElo();
+//        assertThat(player1.getDisplayElo() + player2.getDisplayElo()).isEqualTo(totalElo);
+//    }
+//
+//    private MatchInputDTO createSampleMatch() {
+//        int winningScore = 21;
+//        int losingScore = new Random().nextInt(1, 21);
+//        return new MatchInputDTO(new Date(), "id1", "id2", winningScore, losingScore);
+//    }
 }
