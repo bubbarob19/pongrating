@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,9 +54,12 @@ public class AuthenticationService {
                 .build();
         repository.save(user);
         playerService.createPlayer(user);
-        String jwtToken = jwtService.generateToken(user);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .playerId(user.getPlayerId())
                 .build();
     }
 
@@ -68,12 +72,15 @@ public class AuthenticationService {
                     )
             );
             User user = repository.findByEmail(request.getEmail()).orElseThrow();
-            String jwtToken = jwtService.generateToken(user);
             if (playerRepository.findById(user.getPlayerId()).isEmpty()) {
                 playerService.createPlayer(user);
             }
+            String accessToken = jwtService.generateAccessToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
             return AuthenticationResponse.builder()
-                    .token(jwtToken)
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .playerId(user.getPlayerId())
                     .build();
         } catch (Exception e) {
             throw new LoginFailedException();
@@ -81,19 +88,33 @@ public class AuthenticationService {
     }
 
     public ValidateTokenResponse isTokenValid(ValidateTokenRequest request) {
-        boolean isTokenValid;
-        try {
-            isTokenValid = jwtService.isTokenValid(
+        boolean isTokenValid = jwtService.isTokenValid(
                     request.getToken(),
-                    User.builder()
-                            .email(request.getEmail())
-                            .build()
-            );
-        } catch (Exception e) {
-            isTokenValid = false;
-        }
+                    request.getEmail()
+        );
         return ValidateTokenResponse.builder()
                 .valid(isTokenValid)
+                .build();
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest request) {
+        Optional<User> userOptional = repository.findByEmail(request.getEmail());
+        boolean isTokenValid = jwtService.isRefreshTokenValid(
+                request.getRefreshToken(),
+                request.getEmail()
+        );
+
+        if (userOptional.isEmpty())
+            throw new LoginFailedException("User not found");
+        if (!isTokenValid)
+            throw new LoginFailedException("Invalid refresh token");
+
+        User user = userOptional.get();
+        String accessToken = jwtService.generateAccessToken(user);
+        return AuthenticationResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(request.getRefreshToken())
+                .playerId(user.getPlayerId())
                 .build();
     }
 }

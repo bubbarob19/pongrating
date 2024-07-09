@@ -26,18 +26,20 @@ public class EloCalculationService {
     }
 
     public int calculateDisplayElo(int actualElo, int matchesPlayed) {
-        if (matchesPlayed == 5)
+        if (matchesPlayed == 6)
             return actualElo - 50;
+        else if (matchesPlayed == 5)
+            return actualElo - 100;
         else if (matchesPlayed == 4)
-            return actualElo - 150;
+            return actualElo - 200;
         else if (matchesPlayed == 3)
-            return actualElo - 300;
+            return actualElo - 350;
         else if (matchesPlayed == 2)
             return actualElo - 550;
         else if (matchesPlayed == 1)
-            return actualElo - 900;
+            return actualElo - 800;
         else if (matchesPlayed == 0)
-            return actualElo - 1400;
+            return actualElo - 1200;
 
         return actualElo;
     }
@@ -48,9 +50,9 @@ public class EloCalculationService {
 
     private int calculateKFactorMultiplier(Player player) {
         int matchesPlayed = player.getMatchHistory().size();
-        if (matchesPlayed < 5)
-            return 5;
-        else if (matchesPlayed < 10)
+        if (matchesPlayed < 7)
+            return 6;
+        else if (matchesPlayed < 12)
             return 3;
         else if (matchesPlayed < 20)
             return 2;

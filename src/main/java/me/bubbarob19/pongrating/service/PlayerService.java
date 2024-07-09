@@ -5,7 +5,6 @@ import me.bubbarob19.pongrating.model.Player;
 import me.bubbarob19.pongrating.model.Rank;
 import me.bubbarob19.pongrating.model.User;
 import me.bubbarob19.pongrating.repository.PlayerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,22 +27,6 @@ public class PlayerService {
         return playerRepository.findByFirstNameAndLastName(firstName, lastName);
     }
 
-    public List<Player> getPlayersByFirstName(String firstName) {
-        return playerRepository.findByFirstName(firstName);
-    }
-
-    public List<Player> getPlayersByLastName(String lastName) {
-        return playerRepository.findByLastName(lastName);
-    }
-
-    public List<Player> getPlayersByElo(int elo) {
-        return playerRepository.findByElo(elo);
-    }
-
-    public List<Player> getPlayersWithEloGreaterThan(int elo) {
-        return playerRepository.findPlayersWithEloGreaterThan(elo);
-    }
-
     public Player addPlayer(Player player) {
         return player;
     }
@@ -55,7 +38,7 @@ public class PlayerService {
                 .id(user.getPlayerId())
                 .wins(0)
                 .losses(0)
-                .elo(1400)
+                .elo(1200)
                 .rank(Rank.NEWBIE)
                 .build();
         playerRepository.save(player);

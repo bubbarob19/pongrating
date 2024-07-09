@@ -29,6 +29,9 @@ public class MatchService {
     }
 
     private void updatePlayerData(Player winner, Player loser, MatchInputDTO matchData) {
+        int originalWinnerDisplayElo = winner.getDisplayElo();
+        int originalLoserDisplayElo = loser.getDisplayElo();
+
         int winnerDelta = eloCalculationService.calculateRatingChange(
                 winner,
                 loser,
@@ -55,19 +58,19 @@ public class MatchService {
         winner.setRank(rankCalculationService.calculateRank(winner.getDisplayElo()));
         loser.setRank(rankCalculationService.calculateRank(loser.getDisplayElo()));
 
-        Match match = new Match(
-                matchData.getDate() != null ? matchData.getDate() : new Date(),
-                matchData.getWinnerId(),
-                matchData.getLoserId(),
-                winner.getFirstName() + " " + winner.getLastName(),
-                loser.getLastName() + " " + loser.getLastName(),
-                matchData.getWinnerScore(),
-                matchData.getLoserScore(),
-                winnerDelta,
-                loserDelta,
-                winner.getDisplayElo(),
-                loser.getDisplayElo()
-        );
+        Match match = Match.builder()
+                .date(matchData.getDate() != null ? matchData.getDate() : new Date())
+                .winnerId(matchData.getWinnerId())
+                .loserId(matchData.getLoserId())
+                .winnerName(winner.getFirstName() + " " + winner.getLastName())
+                .loserName(loser.getFirstName() + " " + loser.getLastName())
+                .winnerScore(matchData.getWinnerScore())
+                .loserScore(matchData.getLoserScore())
+                .winnerEloChange(winner.getDisplayElo() - originalWinnerDisplayElo)
+                .loserEloChange(loser.getDisplayElo() - originalLoserDisplayElo)
+                .winnerNewDisplayElo(winner.getDisplayElo())
+                .loserNewDisplayElo(loser.getDisplayElo())
+                .build();
 
         winner.getMatchHistory().add(match);
         loser.getMatchHistory().add(match);

@@ -2,7 +2,6 @@ package me.bubbarob19.pongrating.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,5 +27,10 @@ public class AuthenticationController {
     @PostMapping("/validate-token")
     public ResponseEntity<ValidateTokenResponse> validateToken(@RequestBody ValidateTokenRequest request) {
         return ResponseEntity.ok(service.isTokenValid(request));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthenticationResponse> validateToken(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(service.refreshToken(request));
     }
 }
