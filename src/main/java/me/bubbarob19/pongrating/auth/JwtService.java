@@ -62,7 +62,7 @@ public class JwtService {
 
     public String generateAccessToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         extraClaims.put(TOKEN_TYPE_CLAIM, ACCESS_TOKEN_TYPE);
-        return createToken(extraClaims, userDetails.getUsername(), 10 * 60 * 60 * 1000);
+        return createToken(extraClaims, userDetails.getUsername(), 15 * 60 * 1000);
     }
 
     public String generateAccessToken(UserDetails userDetails) {
